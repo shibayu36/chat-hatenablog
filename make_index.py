@@ -2,6 +2,7 @@ from collections import defaultdict
 import re
 import dotenv
 import os
+import html2text
 
 dotenv.load_dotenv()
 
@@ -48,13 +49,46 @@ def extract_entries_from_movable_type(movable_type_text):
     return entries
 
 
+def convert_body_for_index(body):
+    """Convert body for index
+
+    Args:
+        body: body text
+    """
+    body = html2text.html2text(body)
+    body = re.sub(
+        r"\!\[(.*?)\]\(https?://.+?\)",
+        r"\1", body, flags=re.DOTALL
+    )  # image
+    body = re.sub(
+        r"\[(.*?)\]\(https?://.+?\)",
+        r"\1", body, flags=re.DOTALL
+    )  # link
+
+    return body
+
+
+def make_index_from_hatenablog(hatenablog_mt_file, index_file):
+    """Make index from hatenablog exported file
+
+    Args:
+        hatenablog_mt_file: hatenablog exported file path
+        index_file: index file path
+    """
+    with open(hatenablog_mt_file, "r", encoding="utf-8") as file:
+        content = file.read()
+
+    entries = extract_entries_from_movable_type(content)
+
+    for entry in entries:
+        print(entry['title'])
+        print(entry['basename'])
+        print(convert_body_for_index(entry['body']))
+        print("--------")
+
+
 if __name__ == "__main__":
     HATENABLOG_MT_FILE = os.getenv("HATENABLOG_MT_FILE")
     INDEX_FILE = os.getenv("INDEX_FILE")
 
-    with open(HATENABLOG_MT_FILE, "r", encoding="utf-8") as file:
-        content = file.read()
-
-    entries = extract_entries_from_movable_type(content)
-    from pprint import pprint
-    pprint(entries)
+    make_index_from_hatenablog(HATENABLOG_MT_FILE, INDEX_FILE)
