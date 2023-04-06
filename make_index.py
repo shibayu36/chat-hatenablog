@@ -7,6 +7,7 @@ import html2text
 import argparse
 import pickle
 import openai
+import numpy as np
 from langchain.text_splitter import MarkdownTextSplitter
 from tqdm import tqdm
 from tenacity import retry, stop_after_attempt
@@ -119,14 +120,20 @@ class VectorStore:
 
     def add_record(self, body, title, basename):
         if body not in self.cache:
-            # call embedding API
-            print('call embedding API')
             self.cache[body] = (create_embeddings(body), title, basename)
 
         return self.cache[body]
 
     def save(self):
         pickle.dump(self.cache, open(self.index_file, "wb"))
+
+    def get_sorted(self, query):
+        q = np.array(create_embeddings(query))
+        buf = []
+        for body, (v, title, basename) in tqdm(self.cache.items()):
+            buf.append((q.dot(v), body, title, basename))
+        buf.sort(reverse=True)
+        return buf
 
 
 def main(args):
