@@ -16,7 +16,7 @@ You are virtual character. Read sample output of the character in the following 
 {input}
 """.strip()
 
-MAX_PROMPT_SIZE = 4096
+MAX_PROMPT_SIZE = 4000
 RETURN_SIZE = 250
 
 
@@ -47,9 +47,8 @@ def ask(query, index_file):
 
         rest -= size
 
-    text = "\n\n".join(to_use)
+    text = "\n".join(to_use)
     prompt = PROMPT.format(input=query, text=text)
-    print(prompt)
 
     print("\nTHINKING...")
     response = openai.ChatCompletion.create(
