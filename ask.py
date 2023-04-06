@@ -77,7 +77,7 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Ask question with my blog")
+        description="Answer question with my blog")
     parser.add_argument("--query", required=True)
     parser.add_argument("--index-file", default="index.pickle",
                         help="Index file path")
