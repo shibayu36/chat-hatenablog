@@ -130,7 +130,7 @@ class VectorStore:
     def get_sorted(self, query):
         q = np.array(create_embeddings(query))
         buf = []
-        for body, (v, title, basename) in tqdm(self.cache.items()):
+        for body, (v, title, basename) in self.cache.items():
             buf.append((q.dot(v), body, title, basename))
         buf.sort(reverse=True)
         return buf
