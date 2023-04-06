@@ -1,18 +1,27 @@
 from collections import defaultdict
+import os
 import re
+import time
 import dotenv
 import html2text
 import argparse
 import pickle
+import openai
 from langchain.text_splitter import MarkdownTextSplitter
 from tqdm import tqdm
+from tenacity import retry, stop_after_attempt
 
 dotenv.load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
-def create_embeddings(text, sleep_after_success=1):
-    # TODO: call embedding API
-    return [0.1, -0.1]
+@retry(reraise=True, stop=stop_after_attempt(3))
+def create_embeddings(text):
+    res = openai.Embedding.create(
+        input=[text],
+        model="text-embedding-ada-002")
+
+    return res["data"][0]["embedding"]
 
 
 def parse_movable_type_entry(entry_text):
@@ -95,6 +104,7 @@ def make_index_from_hatenablog(hatenablog_mt_file, index_file):
         converted_body = convert_body_for_index(entry['body'])
         for chunk in markdown_splitter.split_text(converted_body):
             vs.add_record(chunk, entry['title'], entry['basename'])
+            time.sleep(0.2)
 
         vs.save()
 
