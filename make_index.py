@@ -3,6 +3,7 @@ import re
 import dotenv
 import html2text
 import argparse
+from langchain.text_splitter import MarkdownTextSplitter
 
 dotenv.load_dotenv()
 
@@ -80,10 +81,15 @@ def make_index_from_hatenablog(hatenablog_mt_file, index_file):
 
     entries = extract_entries_from_movable_type(content)
 
+    markdown_splitter = MarkdownTextSplitter(chunk_size=1000, chunk_overlap=0)
+
     for entry in entries:
         print(entry['title'])
         print(entry['basename'])
-        print(convert_body_for_index(entry['body']))
+        converted_body = convert_body_for_index(entry['body'])
+        for chunk in markdown_splitter.split_text(converted_body):
+            print(chunk)
+            print('======')
         print("--------")
 
 
