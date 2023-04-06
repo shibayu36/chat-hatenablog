@@ -5,6 +5,7 @@ import html2text
 import argparse
 import pickle
 from langchain.text_splitter import MarkdownTextSplitter
+from tqdm import tqdm
 
 dotenv.load_dotenv()
 
@@ -90,7 +91,7 @@ def make_index_from_hatenablog(hatenablog_mt_file, index_file):
     markdown_splitter = MarkdownTextSplitter(chunk_size=1000, chunk_overlap=0)
     vs = VectorStore(index_file)
 
-    for entry in entries:
+    for entry in tqdm(entries):
         converted_body = convert_body_for_index(entry['body'])
         for chunk in markdown_splitter.split_text(converted_body):
             vs.add_record(chunk, entry['title'], entry['basename'])
