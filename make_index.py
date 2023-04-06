@@ -1,8 +1,8 @@
 from collections import defaultdict
 import re
 import dotenv
-import os
 import html2text
+import argparse
 
 dotenv.load_dotenv()
 
@@ -87,8 +87,17 @@ def make_index_from_hatenablog(hatenablog_mt_file, index_file):
         print("--------")
 
 
-if __name__ == "__main__":
-    HATENABLOG_MT_FILE = os.getenv("HATENABLOG_MT_FILE")
-    INDEX_FILE = os.getenv("INDEX_FILE")
+def main(args):
+    make_index_from_hatenablog(args.mt_file, args.index_file)
 
-    make_index_from_hatenablog(HATENABLOG_MT_FILE, INDEX_FILE)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Create index from MT exported file.")
+    parser.add_argument("--mt-file", required=True,
+                        help="MT exported file path")
+    parser.add_argument("--index-file", default="index.txt",
+                        help="Index file path")
+
+    args = parser.parse_args()
+    main(args)
