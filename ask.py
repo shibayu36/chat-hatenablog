@@ -25,7 +25,7 @@ def get_token_length(text):
     return len(tokens)
 
 
-def ask(query, index_file):
+def ask(query, index_file, base_url):
     PROMPT_SIZE = get_token_length(PROMPT)
     rest = MAX_PROMPT_SIZE - RETURN_SIZE - PROMPT_SIZE
     input_size = get_token_length(query)
@@ -68,11 +68,11 @@ def ask(query, index_file):
     print()
     print('refs:')
     for article in {x['basename']: x for x in used_articles}.values():
-        print(f"- {article['title']}: ({article['basename']})")
+        print(f"- {article['title']}: ({base_url}{article['basename']})")
 
 
 def main(args):
-    ask(args.query, args.index_file)
+    ask(args.query, args.index_file, args.base_url)
 
 
 if __name__ == "__main__":
@@ -81,6 +81,8 @@ if __name__ == "__main__":
     parser.add_argument("--query", required=True)
     parser.add_argument("--index-file", default="index.pickle",
                         help="Index file path")
+    parser.add_argument("--base-url", default=os.environ.get("BASE_URL", ""),
+                        help="Base URL of the blog. (e.g. https://example.com/.)  You can set this value with BASE_URL environment variable.")
 
     args = parser.parse_args()
     main(args)
