@@ -63,12 +63,11 @@ def ask(query, index_file, base_url):
     # show question and answer
     content = response['choices'][0]['message']['content']
     print("\nANSWER:")
-    print(f">>>> {query}")
-    print(">", content)
+    print(content)
     print()
     print('refs:')
     for article in {x['basename']: x for x in used_articles}.values():
-        print(f"- {article['title']}: ({base_url}{article['basename']})")
+        print(f"- {article['title']}: {base_url}{article['basename']}")
 
 
 def main(args):
