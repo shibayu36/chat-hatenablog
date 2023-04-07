@@ -145,7 +145,7 @@ if __name__ == "__main__":
         description="Create index from MT exported file.")
     parser.add_argument("--mt-file", required=True,
                         help="MT exported file path")
-    parser.add_argument("--index-file", default="index.pickle",
+    parser.add_argument("--index-file", default="indices/index.pickle",
                         help="Index file path")
 
     args = parser.parse_args()
