@@ -9,7 +9,7 @@ dotenv.load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 PROMPT = """
-You are virtual character. Read sample output of the character in the following sample section. Then reply to the input.
+You are virtual character. Read sample output of the character in the following sample section. Then reply to the input within {return_size} unicode characters.
 ## Sample
 {text}
 ## Input
@@ -17,7 +17,7 @@ You are virtual character. Read sample output of the character in the following 
 """.strip()
 
 MAX_PROMPT_SIZE = 4000
-RETURN_SIZE = 250
+RETURN_SIZE = 500
 
 
 def get_token_length(text):
@@ -48,7 +48,7 @@ def ask(query, index_file, base_url):
         rest -= size
 
     text = "\n".join(to_use)
-    prompt = PROMPT.format(input=query, text=text)
+    prompt = PROMPT.format(return_size=RETURN_SIZE, input=query, text=text)
 
     print("\nTHINKING...")
     response = openai.ChatCompletion.create(
