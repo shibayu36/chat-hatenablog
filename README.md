@@ -19,7 +19,14 @@ $ python ask.py --query "Is there anything I should do before I send a PullReque
 THINKING...
 
 ANSWER:
-Yes, it's a good practice to write down the implementation plan and specifications in the issue description or as a file in the repository before writing the code. This way, you can get a review of the plan before implementing it, which can help prevent significant rework if there are any critical mistakes. It's also helpful to review your own code before submitting a PullRequest and ensure that it meets certain standards, such as being easy to understand and having clear comments. Additionally, it's a good idea to review your code after taking a break and with fresh eyes to catch any issues you may have missed.
+Yes, it's a good practice to write down the implementation plan and specifications
+in the issue description or as a file in the repository before writing the code.
+This way, you can get a review of the plan before implementing it, which can help
+prevent significant rework if there are any critical mistakes. It's also helpful to
+review your own code before submitting a PullRequest and ensure that it meets
+certain standards, such as being easy to understand and having clear comments.
+Additionally, it's a good idea to review your code after taking a break and with
+fresh eyes to catch any issues you may have missed.
 
 refs:
 - Efforts to use PullRequest to discuss specifications and implementation policies: https://blog.shibayu36.org/entry/2016/08/05/103000
