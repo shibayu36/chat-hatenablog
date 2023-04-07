@@ -46,6 +46,13 @@ pip install -r requirements.txt
 - `OPENAI_API_KEY`: Your API Key for Open AI
 - `BASE_URL`: The base URL for your blog.  This is optional and you can also specify it by command line arguments
 
+You can also use a `.env` file.
+
+```
+OPENAI_API_KEY=...
+BASE_URL=https://blog.shibayu36.org/entry/
+```
+
 ### Export your HatenaBlog
 This tool uses a MovableType exported file.  Access https://blog.hatena.ne.jp/my/export/movable_type and then download the exported file.
 
