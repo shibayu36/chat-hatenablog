@@ -78,7 +78,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Answer question with my blog")
     parser.add_argument("--query", required=True)
-    parser.add_argument("--index-file", default="indices/index.json",
+    parser.add_argument("--index-file", default="indices/index.pickle",
                         help="Index file path")
     parser.add_argument("--base-url", default=os.environ.get("BASE_URL", ""),
                         help="Base URL of the blog. (e.g. https://example.com/.)  You can set this value with BASE_URL environment variable.")

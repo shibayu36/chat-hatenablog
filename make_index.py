@@ -1,11 +1,11 @@
 from collections import defaultdict
-import json
 import os
 import re
 import time
 import dotenv
 import html2text
 import argparse
+import pickle
 import openai
 import numpy as np
 from langchain.text_splitter import MarkdownTextSplitter
@@ -113,8 +113,7 @@ class VectorStore:
     def __init__(self, index_file):
         self.index_file = index_file
         try:
-            with open(self.index_file, "r") as f:
-                self.cache = json.load(f)
+            self.cache = pickle.load(open(self.index_file, "rb"))
         except FileNotFoundError as e:
             self.cache = {}
 
@@ -131,8 +130,7 @@ class VectorStore:
         return self.cache[body]
 
     def save(self):
-        with open(self.index_file, "w") as f:
-            json.dump(self.cache, f, indent=2)
+        pickle.dump(self.cache, open(self.index_file, "wb"))
 
     def get_sorted(self, query):
         q = np.array(create_embeddings(query))
@@ -152,7 +150,7 @@ if __name__ == "__main__":
         description="Create index from MT exported file.")
     parser.add_argument("--mt-file", required=True,
                         help="MT exported file path")
-    parser.add_argument("--index-file", default="indices/index.json",
+    parser.add_argument("--index-file", default="indices/index.pickle",
                         help="Index file path")
 
     args = parser.parse_args()
