@@ -117,6 +117,11 @@ class VectorStore:
         except FileNotFoundError as e:
             self.cache = {}
 
+            # Prepare index directory
+            index_dir = os.path.dirname(self.index_file)
+            if not os.path.exists(index_dir):
+                os.makedirs(index_dir)
+
     def add_record(self, body, title, basename):
         if body not in self.cache:
             self.cache[body] = (create_embeddings(body), title, basename)
