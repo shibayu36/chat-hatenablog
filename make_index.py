@@ -105,7 +105,6 @@ def make_index_from_hatenablog(hatenablog_mt_file, index_file):
         converted_body = convert_body_for_index(entry['body'])
         for chunk in markdown_splitter.split_text(converted_body):
             vs.add_record(chunk, entry['title'], entry['basename'])
-            time.sleep(0.2)
 
         vs.save()
 
@@ -121,6 +120,7 @@ class VectorStore:
     def add_record(self, body, title, basename):
         if body not in self.cache:
             self.cache[body] = (create_embeddings(body), title, basename)
+            time.sleep(0.2)
 
         return self.cache[body]
 
