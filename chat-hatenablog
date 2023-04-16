@@ -1,0 +1,37 @@
+#!/usr/bin/env python
+
+import argparse
+import os
+import dotenv
+import openai
+from chat_hatenablog import ask, __version__
+
+dotenv.load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='Chat HatenaBlog')
+    subparsers = parser.add_subparsers(
+        title='subcommands', description='available subcommands')
+
+    # ask subcommand
+    parser_ask = subparsers.add_parser(
+        'ask', description='Ask a question and get answers from your Hatena Blog')
+    parser_ask.add_argument(
+        "-v", "--version", action="version",
+        version=f"{__version__}", help="Display the version")
+    parser_ask.add_argument("--query", required=True)
+    parser_ask.add_argument("--index-file", default="indices/index.pickle",
+                            help="Index file path")
+    parser_ask.add_argument("--base-url", default=os.environ.get("BASE_URL", ""),
+                            help="Base URL of the blog. (e.g. https://example.com/.)  You can set this value with BASE_URL environment variable.")
+    parser_ask.set_defaults(func=ask)
+
+    args = parser.parse_args()
+    args.func(args)
+
+
+if __name__ == '__main__':
+    main()
