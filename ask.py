@@ -4,6 +4,7 @@ import argparse
 import dotenv
 import tiktoken
 from make_index import VectorStore
+from chat_hatenablog import __version__
 
 dotenv.load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -77,6 +78,9 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Answer question with my blog")
+    parser.add_argument(
+        "-v", "--version", action="version",
+        version=f"{__version__}", help="Display the version")
     parser.add_argument("--query", required=True)
     parser.add_argument("--index-file", default="indices/index.pickle",
                         help="Index file path")

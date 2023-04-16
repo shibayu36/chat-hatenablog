@@ -11,6 +11,7 @@ import numpy as np
 from langchain.text_splitter import MarkdownTextSplitter
 from tqdm import tqdm
 from tenacity import retry, stop_after_attempt
+from chat_hatenablog import __version__
 
 dotenv.load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -148,6 +149,8 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Create index from MT exported file.")
+    parser.add_argument("-v", "--version", action="version",
+                        version=f"{__version__}", help="Display the version")
     parser.add_argument("--mt-file", required=True,
                         help="MT exported file path")
     parser.add_argument("--index-file", default="indices/index.pickle",
