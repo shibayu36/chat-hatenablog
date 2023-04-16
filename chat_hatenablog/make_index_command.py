@@ -1,16 +1,9 @@
 from collections import defaultdict
-import os
 import re
-import dotenv
 import html2text
-import argparse
-import openai
 from langchain.text_splitter import MarkdownTextSplitter
 from tqdm import tqdm
 from chat_hatenablog import __version__, VectorStore
-
-dotenv.load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
 def parse_movable_type_entry(entry_text):
@@ -74,14 +67,18 @@ def convert_body_for_index(body):
     return body
 
 
-def make_index_from_hatenablog(hatenablog_mt_file, index_file):
+def make_index(args):
     """Make index from hatenablog exported file
 
     Args:
         hatenablog_mt_file: hatenablog exported file path
         index_file: index file path
     """
-    with open(hatenablog_mt_file, "r", encoding="utf-8") as file:
+
+    mt_file = args.mt_file
+    index_file = args.index_file
+
+    with open(mt_file, "r", encoding="utf-8") as file:
         content = file.read()
 
     entries = extract_entries_from_movable_type(content)
@@ -95,21 +92,3 @@ def make_index_from_hatenablog(hatenablog_mt_file, index_file):
             vs.add_record(chunk, entry['title'], entry['basename'])
 
         vs.save()
-
-
-def main(args):
-    make_index_from_hatenablog(args.mt_file, args.index_file)
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Create index from MT exported file.")
-    parser.add_argument("-v", "--version", action="version",
-                        version=f"{__version__}", help="Display the version")
-    parser.add_argument("--mt-file", required=True,
-                        help="MT exported file path")
-    parser.add_argument("--index-file", default="indices/index.pickle",
-                        help="Index file path")
-
-    args = parser.parse_args()
-    main(args)

@@ -1,12 +1,7 @@
 import os
 import openai
-import argparse
-import dotenv
 import tiktoken
 from chat_hatenablog import __version__, VectorStore
-
-dotenv.load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
 
 PROMPT = """
 You are virtual character. Read sample output of the character in the following sample section. Then reply to the input within {return_size} unicode characters.
@@ -25,7 +20,11 @@ def get_token_length(text):
     return len(tokens)
 
 
-def ask(query, index_file, base_url):
+def ask(args):
+    query = args.query
+    index_file = args.index_file
+    base_url = args.base_url
+
     PROMPT_SIZE = get_token_length(PROMPT)
     rest = MAX_PROMPT_SIZE - RETURN_SIZE - PROMPT_SIZE
     input_size = get_token_length(query)
@@ -68,23 +67,3 @@ def ask(query, index_file, base_url):
     print('refs:')
     for article in {x['basename']: x for x in used_articles}.values():
         print(f"- {article['title']}: {base_url}{article['basename']}")
-
-
-def main(args):
-    ask(args.query, args.index_file, args.base_url)
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Answer question with my blog")
-    parser.add_argument(
-        "-v", "--version", action="version",
-        version=f"{__version__}", help="Display the version")
-    parser.add_argument("--query", required=True)
-    parser.add_argument("--index-file", default="indices/index.pickle",
-                        help="Index file path")
-    parser.add_argument("--base-url", default=os.environ.get("BASE_URL", ""),
-                        help="Base URL of the blog. (e.g. https://example.com/.)  You can set this value with BASE_URL environment variable.")
-
-    args = parser.parse_args()
-    main(args)
