@@ -3,8 +3,7 @@ import openai
 import argparse
 import dotenv
 import tiktoken
-from make_index import VectorStore
-from chat_hatenablog import __version__
+from chat_hatenablog import __version__, VectorStore
 
 dotenv.load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
