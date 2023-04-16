@@ -1,28 +1,16 @@
 from collections import defaultdict
 import os
 import re
-import time
 import dotenv
 import html2text
 import argparse
-import pickle
 import openai
-import numpy as np
 from langchain.text_splitter import MarkdownTextSplitter
 from tqdm import tqdm
-from tenacity import retry, stop_after_attempt
+from chat_hatenablog import __version__, VectorStore
 
 dotenv.load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
-
-
-@retry(reraise=True, stop=stop_after_attempt(3))
-def create_embeddings(text):
-    res = openai.Embedding.create(
-        input=[text],
-        model="text-embedding-ada-002")
-
-    return res["data"][0]["embedding"]
 
 
 def parse_movable_type_entry(entry_text):
@@ -109,38 +97,6 @@ def make_index_from_hatenablog(hatenablog_mt_file, index_file):
         vs.save()
 
 
-class VectorStore:
-    def __init__(self, index_file):
-        self.index_file = index_file
-        try:
-            self.cache = pickle.load(open(self.index_file, "rb"))
-        except FileNotFoundError as e:
-            self.cache = {}
-
-            # Prepare index directory
-            index_dir = os.path.dirname(self.index_file)
-            if not os.path.exists(index_dir):
-                os.makedirs(index_dir)
-
-    def add_record(self, body, title, basename):
-        if body not in self.cache:
-            self.cache[body] = (create_embeddings(body), title, basename)
-            time.sleep(0.2)
-
-        return self.cache[body]
-
-    def save(self):
-        pickle.dump(self.cache, open(self.index_file, "wb"))
-
-    def get_sorted(self, query):
-        q = np.array(create_embeddings(query))
-        buf = []
-        for body, (v, title, basename) in self.cache.items():
-            buf.append((q.dot(v), body, title, basename))
-        buf.sort(reverse=True)
-        return buf
-
-
 def main(args):
     make_index_from_hatenablog(args.mt_file, args.index_file)
 
@@ -148,6 +104,8 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Create index from MT exported file.")
+    parser.add_argument("-v", "--version", action="version",
+                        version=f"{__version__}", help="Display the version")
     parser.add_argument("--mt-file", required=True,
                         help="MT exported file path")
     parser.add_argument("--index-file", default="indices/index.pickle",
