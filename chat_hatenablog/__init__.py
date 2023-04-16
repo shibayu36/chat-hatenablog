@@ -1,3 +1,2 @@
-__version__ = '0.0.1'
-
+from .__version__ import __version__
 from .vector_store import VectorStore
