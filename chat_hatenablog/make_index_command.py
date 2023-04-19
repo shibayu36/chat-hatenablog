@@ -4,6 +4,7 @@ import html2text
 from langchain.text_splitter import MarkdownTextSplitter
 from tqdm import tqdm
 from chat_hatenablog import __version__, VectorStore
+from chat_hatenablog.entry import Entry
 
 
 def parse_movable_type_entry(entry_text):
@@ -81,14 +82,14 @@ def make_index(args):
     with open(mt_file, "r", encoding="utf-8") as file:
         content = file.read()
 
-    entries = extract_entries_from_movable_type(content)
+    entries = [
+        Entry(item['title'], convert_body_for_index(
+            item['body']), item['basename'])
+        for item in extract_entries_from_movable_type(content)
+    ]
 
-    markdown_splitter = MarkdownTextSplitter(chunk_size=1000, chunk_overlap=0)
     vs = VectorStore(index_file)
 
     for entry in tqdm(entries):
-        converted_body = convert_body_for_index(entry['body'])
-        for chunk in markdown_splitter.split_text(converted_body):
-            vs.add_record(chunk, entry['title'], entry['basename'])
-
+        vs.add_entry(entry)
         vs.save()

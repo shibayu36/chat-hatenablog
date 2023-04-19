@@ -4,6 +4,7 @@ import numpy as np
 import os
 from tenacity import retry, stop_after_attempt
 import openai
+from langchain.text_splitter import MarkdownTextSplitter
 
 
 @retry(reraise=True, stop=stop_after_attempt(3))
@@ -16,6 +17,23 @@ def create_embeddings(text):
 
 
 class VectorStore:
+    """
+    VectorStore creates embeddings for each entry and stores them.
+
+    The data structure is as follows:
+    {
+        "basename1": {
+            "content_hash": "...",
+            "title": "title1",
+            "embeddings_list": [
+                {"body": ..., "embeddings": [...]},
+                {"body": ..., "embeddings": [...]},
+            ],
+        },
+        "basename2": { ... },
+    }
+    """
+
     def __init__(self, index_file):
         self.index_file = index_file
         try:
@@ -28,12 +46,28 @@ class VectorStore:
             if not os.path.exists(index_dir):
                 os.makedirs(index_dir)
 
-    def add_record(self, body, title, basename):
-        if body not in self.cache:
-            self.cache[body] = (create_embeddings(body), title, basename)
-            time.sleep(0.2)
+        self.markdown_splitter = MarkdownTextSplitter(
+            chunk_size=1000, chunk_overlap=0)
 
-        return self.cache[body]
+    def add_entry(self, entry):
+        # Skip if the entry is not changed
+        existing_entry_data = self.cache.get(entry.basename)
+        if existing_entry_data is not None and existing_entry_data.get("content_hash") == entry.content_hash():
+            return
+
+        embeddings_list = []
+        self.cache[entry.basename] = {
+            "content_hash": entry.content_hash(),
+            "title": entry.title,
+            "embeddings_list": embeddings_list,
+        }
+
+        for chunk in self.markdown_splitter.split_text(entry.body):
+            embeddings_list.append({
+                "body": chunk,
+                "embeddings": create_embeddings(chunk),
+            })
+            time.sleep(0.2)
 
     def save(self):
         pickle.dump(self.cache, open(self.index_file, "wb"))
