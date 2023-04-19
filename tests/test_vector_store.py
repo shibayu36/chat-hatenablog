@@ -1,3 +1,6 @@
+import os
+import pickle
+import tempfile
 import pytest
 from unittest.mock import patch
 from chat_hatenablog.entry import Entry
@@ -84,6 +87,30 @@ class TestVectorStore:
                 }]
             },
         }, "the first entry should be updated"
+
+    @patch('chat_hatenablog.vector_store.create_embeddings')
+    def test_save(self, mock_create_embeddings):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_file_path = os.path.join(temp_dir, "index.pkl")
+
+            vector_store = VectorStore(temp_file_path)
+
+            mock_create_embeddings.return_value = [0.1, 0.1]
+            entry = Entry("test title1", "test body1", "test_basename1")
+            vector_store.add_entry(entry)
+            vector_store.save()
+
+            saved_data = pickle.load(open(temp_file_path, "rb"))
+            assert saved_data == {
+                "test_basename1": {
+                    "content_hash": entry.content_hash(),
+                    "title": "test title1",
+                    "embeddings_list": [{
+                        "body": "test body1",
+                        "embeddings": [0.1, 0.1]
+                    }]
+                },
+            }
 
     @patch('chat_hatenablog.vector_store.create_embeddings')
     def test_get_sorted(self, mock_create_embeddings):
