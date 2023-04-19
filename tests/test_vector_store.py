@@ -84,3 +84,39 @@ class TestVectorStore:
                 }]
             },
         }, "the first entry should be updated"
+
+    @patch('chat_hatenablog.vector_store.create_embeddings')
+    def test_get_sorted(self, mock_create_embeddings):
+        vector_store = VectorStore("./test_index.pkl")
+
+        vector_store.cache = {
+            "test_basename1": {
+                "content_hash": 'dummy_hash1',
+                "title": "test title1",
+                "embeddings_list": [
+                    {
+                        "body": "test body1",
+                        "embeddings": [0.1, 0.1]
+                    },
+                    {
+                        "body": "updated",
+                        "embeddings": [0.2, 0.2]
+                    }
+                ]
+            },
+            "test_basename2": {
+                "content_hash": 'dummy_hash2',
+                "title": "test title2",
+                "embeddings_list": [{
+                    "body": "test body2",
+                    "embeddings": [0.5, 0.5]
+                }]
+            },
+        }
+
+        mock_create_embeddings.return_value = [0.2, 0.2]
+        assert vector_store.get_sorted('query1') == [
+            (0.2, 'test body2', 'test title2', 'test_basename2'),
+            (0.08000000000000002, 'updated', 'test title1', 'test_basename1'),
+            (0.04000000000000001, 'test body1', 'test title1', 'test_basename1'),
+        ]

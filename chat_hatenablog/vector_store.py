@@ -74,8 +74,14 @@ class VectorStore:
 
     def get_sorted(self, query):
         q = np.array(create_embeddings(query))
+        items = [
+            [info['title'], embeddings_list['body'], basename,
+                embeddings_list['embeddings']]
+            for basename, info in self.cache.items()
+            for embeddings_list in info.get('embeddings_list')
+        ]
         buf = []
-        for body, (v, title, basename) in self.cache.items():
-            buf.append((q.dot(v), body, title, basename))
+        for title, body, basename, embeddings in items:
+            buf.append((q.dot(embeddings), body, title, basename))
         buf.sort(reverse=True)
         return buf
