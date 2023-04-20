@@ -49,6 +49,9 @@ class VectorStore:
         self.markdown_splitter = MarkdownTextSplitter(
             chunk_size=1000, chunk_overlap=0)
 
+        # To avoid saving the cache file when nothing is changed
+        self._dirty_flag = False
+
     def add_entry(self, entry):
         # Skip if the entry is not changed
         existing_entry_data = self.cache.get(entry.basename)
@@ -69,8 +72,12 @@ class VectorStore:
             })
             time.sleep(0.2)
 
+        self._dirty_flag = True
+
     def save(self):
-        pickle.dump(self.cache, open(self.index_file, "wb"))
+        if self._dirty_flag:
+            pickle.dump(self.cache, open(self.index_file, "wb"))
+            self._dirty_flag = False
 
     def get_sorted(self, query):
         q = np.array(create_embeddings(query))

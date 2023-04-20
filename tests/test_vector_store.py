@@ -113,6 +113,34 @@ class TestVectorStore:
             }
 
     @patch('chat_hatenablog.vector_store.create_embeddings')
+    @patch('pickle.dump')
+    def test_save_only_when_dirty(self, mock_create_embeddings, mock_pickle_dump):
+        mock_create_embeddings.return_value = [0.1, 0.1]
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_file_path = os.path.join(temp_dir, "index.pkl")
+
+            vector_store = VectorStore(temp_file_path)
+
+            entry = Entry("test title1", "test body1", "test_basename1")
+            vector_store.add_entry(entry)
+            vector_store.save()
+            assert mock_pickle_dump.call_count == 1
+
+            vector_store.save()
+            assert mock_pickle_dump.call_count == 1
+
+            another_entry = Entry(
+                "test title2", "test body2", "test_basename2")
+            vector_store.add_entry(another_entry)
+            vector_store.save()
+            assert mock_pickle_dump.call_count == 2
+
+            vector_store.add_entry(entry)
+            vector_store.save()
+            assert mock_pickle_dump.call_count == 2, "should not be called because the entry is not updated"
+
+    @patch('chat_hatenablog.vector_store.create_embeddings')
     def test_get_sorted(self, mock_create_embeddings):
         vector_store = VectorStore("./test_index.pkl")
 
