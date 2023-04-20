@@ -1,4 +1,5 @@
 import pickle
+import tempfile
 import time
 import numpy as np
 import os
@@ -76,7 +77,7 @@ class VectorStore:
 
     def save(self):
         if self._dirty_flag:
-            pickle.dump(self.cache, open(self.index_file, "wb"))
+            self._save_atomic()
             self._dirty_flag = False
 
     def get_sorted(self, query):
@@ -92,3 +93,12 @@ class VectorStore:
             buf.append((q.dot(embeddings), body, title, basename))
         buf.sort(reverse=True)
         return buf
+
+    def _save_atomic(self):
+        with tempfile.NamedTemporaryFile(mode="wb", delete=False) as f:
+            pickle.dump(self.cache, f)
+            f.flush()
+            os.fsync(f.fileno())
+            temp_file_path = f.name
+
+        os.replace(temp_file_path, self.index_file)
