@@ -1,5 +1,5 @@
 - Change `chat_hatenablog/__version__.py` and commit
 - `git tag vx.y.z`
-- `git push --tags`
+- `git push && git push --tags`
 - Draft a new release from https://github.com/shibayu36/chat-hatenablog/releases
 - Choose a tag, generate release notes, and publish
