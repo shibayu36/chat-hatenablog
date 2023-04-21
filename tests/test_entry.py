@@ -1,3 +1,4 @@
+import hashlib
 from chat_hatenablog.entry import Entry
 
 
@@ -11,4 +12,4 @@ def test_entry_init():
 def test_entry_content_hash():
     entry = Entry("Test Title", "Test Body", "test-basename")
     assert entry.content_hash(
-    ) == 'ae6d8a1c07f438667618879eae74ffab84c236ea5d8ca52d5ca0523cc35e8bb9'
+    ) == hashlib.sha256("Test TitleTest Body".encode('utf-8')).hexdigest()
