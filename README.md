@@ -15,18 +15,14 @@ Once you have created the index, you can get the answer from ChatGPT, referring 
 
 ```
 $ ./chat-hatenablog ask --query "Is there anything I should do before I send a PullRequest on GitHub to request a review?"
-
-THINKING...
-
-ANSWER:
-Yes, it's a good practice to write down the implementation plan and specifications
-in the issue description or as a file in the repository before writing the code.
-This way, you can get a review of the plan before implementing it, which can help
-prevent significant rework if there are any critical mistakes. It's also helpful to
-review your own code before submitting a PullRequest and ensure that it meets
-certain standards, such as being easy to understand and having clear comments.
-Additionally, it's a good idea to review your code after taking a break and with
-fresh eyes to catch any issues you may have missed.
+Yes, it is important to perform a self-code review before sending a PullRequest.
+Specifically, only add the necessary parts with git add, confirm the differences
+with git diff --cached, and perform a self-code review. When creating a PullRequest,
+review the contents of the files yourself, make necessary corrections, leave line comments
+on GitHub for unclear parts, and leave comments on the code if necessary. Additionally,
+if the code affects the user's flow, it is necessary to trace the user's behavior
+yourself and check for any discomfort. By doing these tasks, you can reduce the amount
+of rework and provide higher quality code.
 
 refs:
 - Efforts to use PullRequest to discuss specifications and implementation policies: https://blog.shibayu36.org/entry/2016/08/05/103000
