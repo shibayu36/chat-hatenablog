@@ -3,8 +3,8 @@ import re
 import html2text
 from langchain.text_splitter import MarkdownTextSplitter
 from tqdm import tqdm
-from chat_hatenablog import __version__, VectorStore
-from chat_hatenablog.entry import Entry
+from .vector_store import VectorStore
+from .entry import Entry
 
 
 def parse_movable_type_entry(entry_text):

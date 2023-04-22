@@ -1,7 +1,7 @@
 import os
 import openai
 import tiktoken
-from chat_hatenablog import __version__, VectorStore
+from .vector_store import VectorStore
 
 PROMPT = """
 You are virtual character. Read sample output of the character in the following sample section. Then reply to the input within {return_size} unicode characters.
