@@ -6,10 +6,11 @@ import os
 from tenacity import retry, stop_after_attempt
 import openai
 from langchain.text_splitter import MarkdownTextSplitter
+from .entry import Entry
 
 
 @retry(reraise=True, stop=stop_after_attempt(3))
-def create_embeddings(text):
+def create_embeddings(text: str):
     res = openai.Embedding.create(
         input=[text],
         model="text-embedding-ada-002")
@@ -35,7 +36,7 @@ class VectorStore:
     }
     """
 
-    def __init__(self, index_file):
+    def __init__(self, index_file: str):
         self.index_file = index_file
         try:
             self.cache = pickle.load(open(self.index_file, "rb"))
@@ -53,13 +54,13 @@ class VectorStore:
         # To avoid saving the cache file when nothing is changed
         self._dirty_flag = False
 
-    def add_entry(self, entry):
+    def add_entry(self, entry: Entry) -> None:
         # Skip if the entry is not changed
         existing_entry_data = self.cache.get(entry.basename)
         if existing_entry_data is not None and existing_entry_data.get("content_hash") == entry.content_hash():
             return
 
-        embeddings_list = []
+        embeddings_list: list[dict[str, str]] = []
         self.cache[entry.basename] = {
             "content_hash": entry.content_hash(),
             "title": entry.title,
@@ -75,12 +76,12 @@ class VectorStore:
 
         self._dirty_flag = True
 
-    def save(self):
+    def save(self) -> None:
         if self._dirty_flag:
             self._save_atomic()
             self._dirty_flag = False
 
-    def get_sorted(self, query):
+    def get_sorted(self, query: str) -> list[tuple[float, str, str, str]]:
         q = np.array(create_embeddings(query))
         items = [
             [info['title'], embeddings_list['body'], basename,
@@ -94,7 +95,7 @@ class VectorStore:
         buf.sort(reverse=True)
         return buf
 
-    def _save_atomic(self):
+    def _save_atomic(self) -> None:
         with tempfile.NamedTemporaryFile(mode="wb", delete=False) as f:
             pickle.dump(self.cache, f)
             f.flush()
