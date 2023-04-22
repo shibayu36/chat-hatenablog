@@ -15,7 +15,7 @@ MAX_PROMPT_SIZE = 4000
 RETURN_SIZE = 500
 
 
-def get_token_length(text):
+def get_token_length(text: str) -> int:
     tokens = tiktoken.get_encoding("cl100k_base").encode(text)
     return len(tokens)
 
