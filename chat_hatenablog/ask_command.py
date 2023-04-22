@@ -49,7 +49,6 @@ def ask(args):
     text = "\n".join(to_use)
     prompt = PROMPT.format(return_size=RETURN_SIZE, input=query, text=text)
 
-    print("\nTHINKING...")
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -57,13 +56,17 @@ def ask(args):
         ],
         max_tokens=RETURN_SIZE,
         temperature=0.0,
+        stream=True,
     )
 
-    # show question and answer
-    content = response['choices'][0]['message']['content']
-    print("\nANSWER:")
-    print(content)
-    print()
-    print('refs:')
+    for chunk in response:
+        print(
+            chunk['choices'][0]['delta'].get(
+                'content', ''),
+            end='',
+            flush=True
+        )
+
+    print('\n\nrefs:')
     for article in {x['basename']: x for x in used_articles}.values():
         print(f"- {article['title']}: {base_url}{article['basename']}")
