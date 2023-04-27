@@ -2,22 +2,22 @@ changelog:
   categories:
     - title: Added
       labels:
-        - add
+        - 'Type: Add'
     - title: Changed
       labels:
-        - change
+        - 'Type: Change'
     - title: Deprecated
       labels:
-        - deprecate
+        - 'Type: Deprecate'
     - title: Fixed
       labels:
-        - fix
+        - 'Type: Fix'
     - title: Removed
       labels:
-        - remove
+        - 'Type: Remove'
     - title: Security
       labels:
-        - security
+        - 'Type: Security'
     - title: Others
       labels:
         - "*"
