@@ -18,6 +18,14 @@ setup(
         "tiktoken==0.3.3",
         "numpy==1.24.2",
     ],
+    extras_require={
+        "dev": [
+            "pytest==7.3.1",
+            "mypy==1.2.0",
+            "pytest-mypy-plugins==1.10.1",
+            "types-tqdm==4.65.0.1",
+        ],
+    },
     entry_points={
         "console_scripts": [
             "chat-hatenablog = chat_hatenablog.main:main",
