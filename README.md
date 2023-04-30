@@ -8,13 +8,13 @@ This project is inspired by [Scrapbox ChatGPT Connector](https://github.com/nish
 ## Description
 You can create an index of your HatenaBlog with the following command:
 ```
-./chat-hatenablog make-index --mt-file blog.shibayu36.org.export.txt
+chat-hatenablog make-index --mt-file blog.shibayu36.org.export.txt
 ```
 
 Once you have created the index, you can get the answer from ChatGPT, referring to your blog.  You can also get the entry URL related to the answer.
 
 ```
-$ ./chat-hatenablog ask --query "Is there anything I should do before I send a PullRequest on GitHub to request a review?"
+$ chat-hatenablog ask --query "Is there anything I should do before I send a PullRequest on GitHub to request a review?"
 Yes, it is important to perform a self-code review before sending a PullRequest.
 Specifically, only add the necessary parts with git add, confirm the differences
 with git diff --cached, and perform a self-code review. When creating a PullRequest,
@@ -33,9 +33,9 @@ refs:
 ```
 
 ## Usage
-### Install prerequisites
+### Install
 ```
-pip install -r requirements.txt
+pip install git+https://github.com/shibayu36/chat-hatenablog.git
 ```
 
 ### Set environment variables
@@ -56,14 +56,14 @@ This tool uses a MovableType exported file.  Access https://blog.hatena.ne.jp/my
 Make an index like this:
 
 ```
-./chat-hatenablog make-index --mt-file blog.shibayu36.org.export.txt
+chat-hatenablog make-index --mt-file blog.shibayu36.org.export.txt
 ```
 
 It may take a long time that depends on how many articles your HatenaBlog has.
 
 ### Ask with your HatenaBlog
 ```
-./chat-hatenablog ask --query "Is there anything I should do before I send a PullRequest on GitHub to request a review?"
+chat-hatenablog ask --query "Is there anything I should do before I send a PullRequest on GitHub to request a review?"
 ```
 
 Then you will get the answer and the related URLs.
