@@ -68,5 +68,12 @@ chat-hatenablog ask --query "Is there anything I should do before I send a PullR
 
 Then you will get the answer and the related URLs.
 
+## How to Develop
+```
+pip install -e '.[dev]'
+pytest
+chat-hatenablog --version
+```
+
 ## Author
 Yuki Shibazaki <shibayu36@gmail.com>
