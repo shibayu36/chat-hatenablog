@@ -42,7 +42,7 @@ pip install git+https://github.com/shibayu36/chat-hatenablog.git
 - `OPENAI_API_KEY`: Your API Key for Open AI
 - `BASE_URL`: The base URL for your blog.  This is optional and you can also specify it by command line arguments
 
-You can also use a `.env` file.
+You can also use a `~/.chat-hatenablog/.env` file.
 
 ```
 OPENAI_API_KEY=...
