@@ -4,6 +4,8 @@ import dotenv
 import openai
 from chat_hatenablog import ask, make_index, __version__
 
+# Priority: shell > .env > ~/.chat-hatenablog/.env
+dotenv.load_dotenv(dotenv_path=os.path.expanduser("~/.chat-hatenablog/.env"))
 dotenv.load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
