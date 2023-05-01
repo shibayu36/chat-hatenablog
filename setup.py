@@ -18,7 +18,7 @@ setup(
     install_requires=[
         "python-dotenv==1.0.0",
         "html2text==2020.1.16",
-        "langchain==0.0.132",
+        "langchain==0.0.154",
         "tqdm==4.65.0",
         "openai==0.27.4",
         "tenacity==8.2.2",
