@@ -23,7 +23,7 @@ setup(
         "openai==0.27.5",
         "tenacity==8.2.2",
         "tiktoken==0.3.3",
-        "numpy==1.24.2",
+        "numpy==1.24.3",
     ],
     extras_require={
         "dev": [
