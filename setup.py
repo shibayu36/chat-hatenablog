@@ -20,7 +20,7 @@ setup(
         "html2text==2020.1.16",
         "langchain==0.0.154",
         "tqdm==4.65.0",
-        "openai==0.27.4",
+        "openai==0.27.5",
         "tenacity==8.2.2",
         "tiktoken==0.3.3",
         "numpy==1.24.2",
